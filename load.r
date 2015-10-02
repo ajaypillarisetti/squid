@@ -3,12 +3,14 @@
 
 library(lubridate)
 library(plyr)
-library(data.table)
 library(reshape2)
 library(scales)
 library(devtools)
 library(dygraphs)
+library(lme4)
+library(splines)
 library(xts)
 library(shiny)
 library(shinydashboard)
+library(data.table)
 
