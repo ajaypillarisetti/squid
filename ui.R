@@ -9,8 +9,9 @@ dashboardPage(
             ),
 		tabItem("analysis",
             fluidRow(
-                box(width=12,status="info", solidHeader=TRUE, title="Welcome to ARMS",
-                    fileInput('files', 'Select an ARMS csv file', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'), multiple=F)
+                box(width=12,status="info", solidHeader=TRUE,
+                    # fileInput('files', 'Select an ARMS csv file', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'), multiple=F)
+                    uiOutput("fileList")
                 )
             ),
             fluidRow(
@@ -24,22 +25,28 @@ dashboardPage(
                 box(
                     title = "Select Zero 1",
                     width = 6, height='225px',
-                    status = "info", solidHeader = TRUE,
-                    dygraphOutput('zeroPlot1', height='175px')
+                    status = "info",
+                    dygraphOutput('zeroPlot1', height='165px')
                 ),           
                 box(
                     title = "Select Zero 2",
                     width = 6, height='225px',
-                    status = "info", solidHeader = TRUE,
-                    dygraphOutput('zeroPlot2', height='175px')
+                    status = "info",
+                    dygraphOutput('zeroPlot2', height='165px')
                 )
             ),
             fluidRow(
                 box(
                     title = "Select Sampling",
-                    width = 12, height="450px",
+                    width = 8, height="450px",
                     status="info", solidHeader = TRUE,
-                    dygraphOutput('samplePlot', height='400px')
+                    dygraphOutput('samplePlot', height='375px')
+                ),
+                box(
+                    title = "Sampling (non-transformed)",
+                    width = 4, height="450px",
+                    status="info", solidHeader = TRUE,
+                    dygraphOutput('samplePlotnolog', height='375px')
                 )
       	    ),
             fluidRow(
@@ -48,6 +55,8 @@ dashboardPage(
                     width=12,
                     status='info',
                     solidHeader=TRUE,
+                    downloadButton("downloadCSV", "Download as CSV"),
+                    HTML("<BR><BR>"),
                     tableOutput('achTable')
                 )
             )

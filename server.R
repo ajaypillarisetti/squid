@@ -1,22 +1,36 @@
 ### Ajay Pillarisetti, University of California, Berkeley, 2015
 ### V1.0N
 
-
-
 Sys.setenv(TZ="Asia/Kathmandu")
 
 shinyServer(function(input, output) {
 
-	#read in data
-	datasetInput <- reactive({
-	    inFile <- input$files
-    	if (is.null(inFile)){return(NULL)} 
-		dta<- read.squid(inFile$datapath[1])
+	output$fileList <- reactiveUI(function(){
+		files<-list.files('~/Desktop/KAPS Air Pollution Data', recursive=T, include.dirs=T, full.names=T, pattern='SQD')
+		hhids <- as.data.table(sapply(strsplit(files, "/"),'[[',6))
+		multi.hhids <- as.data.table(hhids[,table(hhids)])[N>=6][,hhids]
+		set.seed(12171980)
+		multi_hhids_sample <- sample(multi.hhids,50)
+		files <- grep(paste(multi_hhids_sample, collapse="|"),files,value=T)
+		# files <- sapply(strsplit(files, '/'),'[[',7)
+		selectInput("dataset", "Choose a File:", choices = files)
 	})
 
+	datasetInput <- reactive({
+		dta <- read.squid(input$dataset)
+	})
+
+	#read in data - for uploads
+	# datasetInput <- reactive({
+	#   inFile <- input$files
+ 	#	if (is.null(inFile)){return(NULL)} 
+	# 	dta<- read.squid(inFile$datapath[1])
+	# })
+
 	datasetName <- reactive({
-		inFile <- input$files
-		inFile$name
+		# inFile <- input$files
+		# inFile$name
+		basename(input$dataset)
 	})
 
 	data_cleaned <- reactive({
@@ -201,18 +215,24 @@ shinyServer(function(input, output) {
 
 	output$samplePlot<- 
 	renderDygraph({
-		dygraph(log(correctedData())) %>% 
+		dygraph(log(correctedData()), group = 'SamplePlots') %>% 
 	    dyOptions(axisLineWidth = 1.5, fillGraph = F, drawGrid = FALSE, useDataTimezone=T, colors = RColorBrewer::brewer.pal(4, "Set2"))
 	})
+
+	output$samplePlotnolog<- 
+	renderDygraph({
+		dygraph(correctedData(), group = 'SamplePlots') %>% 
+	    dyOptions(axisLineWidth = 1.5, fillGraph = F, drawGrid = FALSE, useDataTimezone=T, colors = RColorBrewer::brewer.pal(4, "Set2"))
+	})	
 
 	##########################
 	####### DL HANDLERS ###### 
 	##########################
 	output$downloadCSV <- downloadHandler(
-		filename = function() {paste(datasetName(), '.cleaned.csv', sep='') },
+		filename = function() {paste(gsub('.CSV', '', datasetName()), '.cleaned.csv', sep='') },
 		content = function(file) {
-			write.csv(melt(data_cleaned(), id.var=c('datetime','device_id')), file, row.names=F)
-		}
+			write.csv(correctedData_lm(), file, row.names=F)
+		} 
 	)
 
 })
