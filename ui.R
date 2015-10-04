@@ -23,13 +23,13 @@ dashboardPage(
             ),
 	        fluidRow(                    
                 box(
-                    title = "Select Zero 1",
+                    title = textOutput("zero1Title"),
                     width = 6, height='225px',
                     status = "info",
                     dygraphOutput('zeroPlot1', height='165px')
                 ),           
                 box(
-                    title = "Select Zero 2",
+                    title = textOutput("zero2Title"),
                     width = 6, height='225px',
                     status = "info",
                     dygraphOutput('zeroPlot2', height='165px')
@@ -37,16 +37,16 @@ dashboardPage(
             ),
             fluidRow(
                 box(
-                    title = "Select Sampling",
-                    width = 8, height="450px",
-                    status="info", solidHeader = TRUE,
-                    dygraphOutput('samplePlot', height='375px')
+                    title = textOutput("sampleTitle"),
+                    width = 8, height="350px",
+                    status="info",
+                    dygraphOutput('samplePlot', height='295px')
                 ),
                 box(
                     title = "Sampling (non-transformed)",
-                    width = 4, height="450px",
-                    status="info", solidHeader = TRUE,
-                    dygraphOutput('samplePlotnolog', height='375px')
+                    width = 4, height="350px",
+                    status="info",
+                    dygraphOutput('samplePlotnolog', height='295px')
                 )
       	    ),
             fluidRow(
@@ -54,7 +54,6 @@ dashboardPage(
                     title = 'ACHs',
                     width=12,
                     status='info',
-                    solidHeader=TRUE,
                     downloadButton("downloadCSV", "Download as CSV"),
                     HTML("<BR><BR>"),
                     tableOutput('achTable')
