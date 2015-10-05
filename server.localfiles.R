@@ -6,16 +6,38 @@ shinyServer(function(input, output) {
 
 Sys.setenv(TZ="Asia/Kathmandu")
 
-	# read in data - for uploads
-	datasetInput <- reactive({
-	  inFile <- input$files
- 		if (is.null(inFile)){return(NULL)} 
-		dta<- read.squid(inFile$datapath[1])
+	output$fileList <- renderUI(function(){
+		files<-list.files('~/Desktop/KAPS Air Pollution Data', recursive=T, include.dirs=T, full.names=T, pattern='SQD')
+		hhids <- as.data.table(sapply(strsplit(files, "/"),'[[',6))
+		multi.hhids <- as.data.table(hhids[,table(hhids)])[N>=6][,hhids]
+		set.seed(12171980)
+		multi_hhids_sample <- sample(multi.hhids,50)
+		multi_hhids_sample <- grep(paste(multi_hhids_sample, collapse="|"), multi.hhids, value=T, invert=T)
+		files <- grep(paste(multi_hhids_sample, collapse="|"),files,value=T)
+		# files <- sapply(strsplit(files, '/'),'[[',7)
+		selectInput("dataset", "Choose a File:", choices = files)
 	})
 
+	datasetInput <- reactive({
+		if (is.null(input$dataset)) return(NULL)
+		dta <- read.squid(input$dataset)
+	})
+
+	#read in data - for uploads
+	# datasetInput <- reactive({
+	#   inFile <- input$files
+ 	#	if (is.null(inFile)){return(NULL)} 
+	# 	dta<- read.squid(inFile$datapath[1])
+	# })
+
 	datasetName <- reactive({
-		inFile <- input$files
-		inFile$name
+		# inFile <- input$files
+		# inFile$name
+		if (is.null(datasetInput())) return(NULL)
+		dta <- basename(input$dataset)
+		dta <- gsub(".csv", "", dta)
+		dta <- gsub(".CSV", "", dta)
+		dta
 	})
 
 	data_cleaned <- reactive({

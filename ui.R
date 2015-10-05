@@ -10,8 +10,8 @@ dashboardPage(
 		tabItem("analysis",
             fluidRow(
                 box(width=12,status="info", solidHeader=TRUE,
-                    # fileInput('files', 'Select an ARMS csv file', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'), multiple=F)
-                    uiOutput("fileList")
+                    fileInput('files', 'Select an ARMS csv file', accept=c('text/csv', 'text/comma-separated-values,text/plain', '.csv'), multiple=F)
+                    # uiOutput("fileList")
                 )
             ),
             fluidRow(
