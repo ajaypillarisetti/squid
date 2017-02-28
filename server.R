@@ -182,8 +182,9 @@ Sys.setenv(TZ="Asia/Kathmandu")
 			zero2_stop=		as.character(to_z2())
 		)]
 		# not all the same width, so we have an is.unsorted
-		ach <- melt(ach, id.var=c("hhid","location","date", 'zero1_start', 'zero1_stop', 'sample_start', 'sample_stop', 'zero2_start', 'zero2_stop'), measure.var=grep("ppm",names(ach)))
+		ach <- melt(ach, id.var=c("hhid","location","date", 'zero1_start', 'zero1_stop', 'sample_start', 'sample_stop', 'zero2_start', 'zero2_stop', 'file'), measure.var=grep("ppm",names(ach)))
 		ach.all <- ach[,with=F]
+		ach.all[, value:=round(value, 2)]
 		ach.all
 	})
 
